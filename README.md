@@ -1,21 +1,27 @@
-AI-Optimized Polymer Simulation
+# AI-Optimized Polymer Simulation
 
-Multi-objective tuning of a coarse-grained (CG) model to match atomistic targets
+### Multi-objective tuning of a coarse-grained (CG) model to match atomistic targets
 
-Overview
+## Overview
 
 This project shows how a fast coarse-grained (CG) simulation can be calibrated to imitate a slower atomistic reference on two properties—density and radius of gyration (Rg)—while also keeping a runtime proxy low. The workflow uses multi-objective optimization to produce a Pareto front: the best speed/accuracy trade-offs.
 
-Why this is useful
+## Why this is useful
 
- Atomistic models represent every atom. They’re accurate but slow.
+  - Atomistic models represent every atom. They’re accurate but slow.
 
- Coarse-grained models group atoms into beads. They run much faster but start out biased.
+  - Coarse-grained models group atoms into beads. They run much faster but start out biased.
 
- By tuning a small set of CG parameters, we can approach atomistic accuracy at a fraction of the cost, which is ideal for screening many polymer candidates before any expensive, detailed runs.
+  - By tuning a small set of CG parameters, we can approach atomistic accuracy at a fraction of the cost, which is ideal for screening many polymer candidates before any expensive, detailed runs.
 
-What’s in this repo
- mobo-cg-calibration/
+
+## What’s in this repo
+
+<details>
+<summary> Repo structure </summary>
+ 
+```text
+mobo-cg-calibration/
 ├─ src/
 │  ├─ data.py        # synthetic polymer designs + synthetic atomistic reference
 │  ├─ cg_model.py    # CG model + parameterization + runtime proxy
@@ -27,26 +33,28 @@ What’s in this repo
 ├─ results/          # created at runtime: CSVs and plots
 ├─ README.md
 └─ requirements.txt
+```
+</details>
 
-How it works:
+## How it works:
 
- 1.Generate candidate polymers (monomer fractions, chain length, stiffness).
+  - Generate candidate polymers (monomer fractions, chain length, stiffness).
 
- 2.Compute the reference density and Rg with a synthetic atomistic-like function.
+  - Compute the reference density and Rg with a synthetic atomistic-like function.
 
- 3.Predict with a fast CG model that has five tunable knobs (scales and a bias).
+  - Predict with a fast CG model that has five tunable knobs (scales and a bias).
 
- 4.Score each setting on two objectives:
+  - Score each setting on two objectives:
 
- 5.Combined percent error vs the reference (lower is better)
+  - Combined percent error vs the reference (lower is better)
 
- 6.A runtime proxy (lower is better)
+  - A runtime proxy (lower is better)
 
- 7.Search the parameter space with a multi-objective optimizer (NSGA-II).
+  - Search the parameter space with a multi-objective optimizer (NSGA-II).
 
- 8.Keep Pareto-optimal settings—you can’t improve speed and accuracy at the same time.
+  - Keep Pareto-optimal settings—you can’t improve speed and accuracy at the same time.
 
- 9.Pick a point on that front that fits your needs (for example, “error under 6% with very fast runtime”).
+  - Pick a point on that front that fits your needs (for example, “error under 6% with very fast runtime”).
 
 Demo results (200-trial run)
 
@@ -71,11 +79,11 @@ How to read the plot: the lower-left edge is the set of best trade-offs. Moving 
  Plot: results/pareto.png
  <img width="873" height="710" alt="Screenshot 2025-09-30 215139" src="https://github.com/user-attachments/assets/407b8b6e-6ae7-425f-86eb-a605454dd285" />
 
- Quick start
+## Quick start
  Python 3.10+ recommended. Works with Conda or venv.
- Conda example
-
- conda create -n mobo-cg python=3.10 -y
+ ### Conda example
+```text
+conda create -n mobo-cg python=3.10 -y
 conda activate mobo-cg
 pip install -r requirements.txt
 
@@ -84,18 +92,18 @@ python -m src.optimize
 
 # make the Pareto plot (writes results/pareto.png)
 python -c "from src.viz import plot_pareto; plot_pareto()"
-
-Interpreting the results:
- Each dot is one parameter setting (θ).
- Down = better accuracy. Left = faster/cheaper.
- Choose a Pareto-optimal point that meets your accuracy target within your runtime budget, then validate with higher-fidelity or experimental data.
-What to tweak:
+```
+## Interpreting the results:
+  - Each dot is one parameter setting (θ).
+  - Down = better accuracy. Left = faster/cheaper.
+  - Choose a Pareto-optimal point that meets your accuracy target within your runtime budget, then validate with higher-fidelity or experimental data.
+## What to tweak:
  * Weights (density vs Rg) in src/metrics.py.
  * Search ranges in src/optimize.py.
  * Dataset size in src/optimize.py (e.g., more designs for stability).
  * Optimizer choice (e.g., Bayesian multi-objective methods) if evaluations are costly.
  
-License:
+## License:
 MIT License © 2025 Prihvi krishna Alluri
 
 This repository is an independent, educational demo inspired by the Multiscale Technologies polymer case study: https://multiscale.tech/casestudy-polymers/. It is not affiliated with or endorsed by Multiscale Technologies. No proprietary code or data from Multiscale is included. All trademarks and names are the property of their respective owners.
