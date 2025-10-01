@@ -81,7 +81,7 @@ How to read the plot: the lower-left edge is the set of best trade-offs. Moving 
 
 ## Quick start
  Python 3.10+ recommended. Works with Conda or venv.
- ### Conda example
+ ### Conda environment example
 ```text
 conda create -n mobo-cg python=3.10 -y
 conda activate mobo-cg
